@@ -1,4 +1,4 @@
-FROM python:3.8.13-bullseye
+FROM python:3.8.13-slim
 
 # Maintainer info
 LABEL maintainer="A01420128@tec.mx"
