@@ -1,22 +1,20 @@
-import tensorflow as tf
+from tensorflow import expand_dims
 from tensorflow import keras
-import numpy as np
+from numpy import argmax
 from PIL import Image
 from urllib import request
 from io import BytesIO
 from waste import CLASSES
 
 def idwaste(url: str, modelpath: str):
-    model = tf.keras.models.load_model(modelpath)
+    model = keras.models.load_model(modelpath)
 
     res = request.urlopen(url).read()
     img = Image.open(BytesIO(res)).resize((256,256))
-    img_array = tf.keras.preprocessing.image.img_to_array(img)
-    img_array = tf.expand_dims(img_array, 0)
+    img_array = keras.preprocessing.image.img_to_array(img)
+    img_array = expand_dims(img_array, 0)
     predictions = model.predict(img_array)
 
-    return {
-            "class": CLASSES[np.argmax(predictions)],
-            "certainty": predictions[0][np.argmax(predictions)]*100
-    }
-
+    class_type = CLASSES[argmax(predictions)]
+    class_type["certainty"] = predictions[0][argmax(predictions)]*100
+    return class_type
